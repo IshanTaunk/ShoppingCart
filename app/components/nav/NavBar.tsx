@@ -3,6 +3,7 @@ import Container from "../Container"
 import logo from '../../assets/Logo.png';
 import { Redressed } from "next/font/google";
 import Image from "next/image";
+import CartCount from "./CartCount";
 
 const redressed = Redressed({
   subsets: ['latin'],
@@ -27,6 +28,9 @@ export const NavBar = () => {
                             />
                             fingerhut
                         </Link>
+                        <div className="flex items-center gap-4  ml-48 md:gap-8 sm:col-span-1 sm:gap-4 sm:ml-40">
+                            <CartCount />
+                        </div>
                     </div>
                 </Container>
             </div>

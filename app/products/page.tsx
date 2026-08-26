@@ -1,27 +1,32 @@
-import React from "react";
 import Container from "../components/Container";
 import ProductsList from "../components/ProductsList";
 import { products as hardCodedProducts } from "@/const/products";
+import { getProducts } from "../actions/fetchProducts";
+import { toProduct } from "../components/products/decode";
+import { Product } from "../components/products/types";
 
-interface ProductsPageProps {
-    searchParams?: {
-        q?: string;
-    }
-}
+const toDate = (value: string | Date | null | undefined) => {
+  if (value === null || value === undefined) return value;
+  return new Date(value);
+};
 
-const ProductsPage:React.FC<ProductsPageProps> = () => {
-    const productsWithDateObjects = hardCodedProducts.map(
+const ProductsPage = async () => {
+  const response = await getProducts();
+
+  const decodedProduct = response.map((el) => toProduct(el));
+    const mergedProducts = [...decodedProduct,...hardCodedProducts] as Product[];
+    const productsWithDateObjects: Product[] = mergedProducts.map(
     (product) => ({
       ...product,
       reviews: product.reviews.map((review) => ({
         ...review,
         user: {
           ...review.user,
-          createdAt: new Date(review.user.createdAt),
-          updatedAt: new Date(review.user.updatedAt),
+          createdAt: toDate(review.user.createdAt),
+          updatedAt: toDate(review.user.updatedAt),
         },
         rating: review.rating,
-        createdDate: new Date(review.createdDate),
+        createdDate: toDate(review.createdDate),
       })),
     }),
   );
