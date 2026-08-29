@@ -1,3 +1,5 @@
+import { Product as PrismaProduct } from '@prisma/client';
+
 export type Image = {
   color?: string | null;
   colorCode?: string | null;
@@ -42,3 +44,5 @@ export type Review = {
     role?: string;
   };
 };
+
+export type FullProduct = PrismaProduct;
