@@ -4,13 +4,16 @@ import logo from '../../assets/Logo.png';
 import { Redressed } from "next/font/google";
 import Image from "next/image";
 import CartCount from "./CartCount";
+import UserMenu from "./UserMenu";
+import { getCurrentUser } from "@/app/actions/getCurrentUser";
 
 const redressed = Redressed({
   subsets: ['latin'],
   weight: ['400'],
 });
 
-export const NavBar = () => {
+export const NavBar = async() => {
+    const currentUser = await getCurrentUser();
     return (
         <div className="sticky top-0 w-full bg-slate-200 z-30 shadow-sm pl-2 pr-2">
             <div className="py-4 border-b-[1px]">
@@ -30,6 +33,7 @@ export const NavBar = () => {
                         </Link>
                         <div className="flex items-center gap-4  ml-48 md:gap-8 sm:col-span-1 sm:gap-4 sm:ml-40">
                             <CartCount />
+                            <UserMenu currentUser={currentUser}/>
                         </div>
                     </div>
                 </Container>
