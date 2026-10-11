@@ -1,4 +1,6 @@
-import { CartProductType } from "@/app/products/[productId]/ProductDetails";
+"use client";
+
+import type { CartProductType } from "@/app/products/[productId]/ProductDetails";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 

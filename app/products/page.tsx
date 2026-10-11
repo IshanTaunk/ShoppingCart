@@ -11,7 +11,8 @@ const toDate = (value: string | Date | null | undefined) => {
 };
 
 const ProductsPage = async () => {
-  const response = await getProducts();
+  const category = 'all';
+  const response = await getProducts({category});
 
   const decodedProduct = response.map((el) => toProduct(el));
     const mergedProducts = [...decodedProduct,...hardCodedProducts] as Product[];
