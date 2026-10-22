@@ -10,13 +10,56 @@ const toDate = (value: string | Date | null | undefined) => {
   return new Date(value);
 };
 
-const ProductsPage = async () => {
-  const category = 'all';
-  const response = await getProducts({category});
+interface ProductsPageProps {
+  searchParams?: Promise<{
+    category?: string;
+    q?: string;
+    priceMin?: string;
+    priceMax?: string;
+    aiCategory?: string;
+  }>;
+}
+
+const ProductsPage:React.FC<ProductsPageProps> = async ({
+  searchParams
+}) => {
+  const resolvedSearchParams = await searchParams;
+  const category = resolvedSearchParams && resolvedSearchParams.category
+      ? resolvedSearchParams.category
+      : 'all';
+  const query =
+    resolvedSearchParams && resolvedSearchParams.q
+      ? resolvedSearchParams.q
+      : null;
+  const priceMin = resolvedSearchParams?.priceMin
+    ? parseFloat(resolvedSearchParams.priceMin)
+    : undefined;
+  const priceMax = resolvedSearchParams?.priceMax
+    ? parseFloat(resolvedSearchParams.priceMax)
+    : undefined;
+  const aiCategory = resolvedSearchParams?.aiCategory || undefined;
+  const skip = 0;
+  const limit = 100;
+  let response;
+  if(query){
+    response = await getProducts({
+      query,
+      limit,
+      skip,
+      priceMin,
+      priceMax,
+      aiCategory});
+  }else{
+      response = await getProducts({
+        category,
+        limit,
+        skip
+      });
+  }
 
   const decodedProduct = response.map((el) => toProduct(el));
-    const mergedProducts = [...decodedProduct,...hardCodedProducts] as Product[];
-    const productsWithDateObjects: Product[] = mergedProducts.map(
+  const mergedProducts = [...decodedProduct] as Product[];
+  const productsWithDateObjects: Product[] = mergedProducts.map(
     (product) => ({
       ...product,
       reviews: product.reviews.map((review) => ({

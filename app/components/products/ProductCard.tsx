@@ -5,6 +5,7 @@ import NullData from "../NullData";
 import { Product } from "./types";
 import Image from "next/image";
 import { truncateText } from "@/app/utils/truncateText";
+import { formatPrice } from "@/app/utils/formatePrice";
 
 interface ProductCardProps<TData>{
     data: TData;
@@ -34,13 +35,16 @@ const ProductCard:React.FC<ProductCardProps<Product>> = ({data}) => {
                 />
             </div>
 
-            {data?.brand && (
             <div className="mt-4 font-bold">
+                {truncateText(data?.title)}
+            </div>
+            {data?.brand && (
+            <div className="text-sm sm:text-[0.75rem]">
                 {truncateText(data?.brand)}
             </div>
             )}
-            <div className="text-sm sm:text-[0.75rem]">
-                {truncateText(data?.title)}
+            <div className="font-semibold">
+            {formatPrice(data?.price)}
             </div>
         </div>
     </div>

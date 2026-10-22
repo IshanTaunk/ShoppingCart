@@ -6,6 +6,8 @@ import Image from "next/image";
 import CartCount from "./CartCount";
 import UserMenu from "./UserMenu";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
+import { Suspense } from "react";
+import SearchBar from "./SearchBar";
 
 const redressed = Redressed({
   subsets: ['latin'],
@@ -31,6 +33,14 @@ export const NavBar = async() => {
                             />
                             fingerhut
                         </Link>
+
+                        <div className="md:flex sm:col-span-1">
+                            <Suspense
+                                fallback={<div>Loading Search..</div>}>
+                                <SearchBar />
+                            </Suspense>
+                        </div>
+                            
                         <div className="flex items-center gap-4  ml-48 md:gap-8 sm:col-span-1 sm:gap-4 sm:ml-40">
                             <CartCount />
                             <UserMenu currentUser={currentUser}/>

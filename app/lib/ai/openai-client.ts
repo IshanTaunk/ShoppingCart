@@ -138,3 +138,65 @@ export async function getAICompletionWithTools(
     stopReason,
   };
 };
+
+export async function getAICompletion(
+  messages: ChatMessage[],
+  options: AICompletionOptions = {},
+): Promise<string> {
+  const {
+    model = DEFAULT_MODEL,
+    temperature = 0.7,
+    maxTokens = 1000,
+    systemPrompt,
+  } = options;
+
+  const apiMessages = buildMessages(messages, systemPrompt);
+
+  try {
+    const response =
+      await requireOpenAI().chat.completions.create({
+        model,
+        messages: apiMessages,
+        max_tokens: maxTokens,
+        temperature,
+      });
+
+    return (
+      response.choices[0]?.message?.content?.trim() ?? ''
+    );
+  } catch (error) {
+    // Handle OpenAI API errors
+    if (error instanceof OpenAI.APIError) {
+      console.error('OpenAI API Error:', {
+        status: error.status,
+        message: error.message,
+        error: error.error,
+      });
+
+      // Check for insufficient funds / billing errors
+      if (
+        error.status === 402 ||
+        error.message?.includes('insufficient_quota')
+      ) {
+        throw new Error(
+          'Insufficient funds. Please check your OpenAI account balance.',
+        );
+      }
+      if (error.status === 429) {
+        throw new Error(
+          'Rate limit exceeded. Please try again later.',
+        );
+      }
+
+      if (error.status === 401 || error.status === 403) {
+        throw new Error(
+          'Authentication failed. Check your OpenAI API key.',
+        );
+      }
+
+      throw new Error(`OpenAI API error: ${error.message}`);
+    }
+
+    throw error;
+  }
+}

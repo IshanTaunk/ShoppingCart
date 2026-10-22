@@ -94,8 +94,10 @@ export const getProducts = async (
     const limitVal = categoryStr === 'all' ? limit || 10 : undefined;
     const skipVal = categoryStr === 'all' ? skip || 0 : undefined;
 
-    const matchClauses = [];
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+    try {
+    const matchClauses = [];
     // 🧠 Fuzzy text search using $search
     if (searchString) {
         matchClauses.push({
@@ -170,6 +172,12 @@ export const getProducts = async (
             ...(categoryClause ? [categoryClause] : []),
             ...(priceFilter ? [priceFilter] : []),
             {
+              $match: {
+                category: { $ne: 'groceries' },
+                title: { $regex: escaped, $options: 'i' },
+              },
+            },
+            {
               $skip: skipVal ?? 0,
             },
             {
@@ -184,6 +192,10 @@ export const getProducts = async (
         ? cursor.firstBatch
         : [];
     const newProducts = transformedProducts(products);
-    return newProducts;
+        return newProducts;
+    }catch(error){
+      console.error('❌ Prisma error:', error);
+      throw error; // keep original message & stack
+    }
 }
 
