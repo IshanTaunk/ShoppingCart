@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@reference "tailwindcss";
 
 .main-image {
   @apply flex md:flex-row justify-center align-middle self-stretch p-0 md:w-auto md:h-full;

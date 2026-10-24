@@ -64,10 +64,10 @@ const ChatWindow: React.FC = () => {
       sendMessage(question, cartItems || []);
   };
     return (
-    <div className="fixed bottom-24 right-6 z-40 w-80 sm:w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
+    <div className="fixed bottom-24 right-6 z-40 w-80 max-w-[calc(100vw-3rem)] h-[500px] max-h-[calc(100dvh-7rem)] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-4 py-3 flex items-center justify-between">
+      <div className="shrink-0 bg-gradient-to-r from-slate-700 to-slate-800 text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MdAutoAwesome size={20} />
           <div>
@@ -98,7 +98,7 @@ const ChatWindow: React.FC = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="min-h-0 flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message: Message) => (
           <div
             key={message.id}
@@ -109,7 +109,7 @@ const ChatWindow: React.FC = () => {
                   ? 'bg-slate-700 text-white rounded-br-sm'
                   : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm'
               }`}>
-              <p className="text-sm whitespace-pre-wrap">
+              <p className="text-sm whitespace-pre-wrap break-words">
                 {message.role === 'assistant' ? (
                   <MessageContent
                     content={message.content}
@@ -143,7 +143,7 @@ const ChatWindow: React.FC = () => {
 
       {/* Quick Questions - show only at start */}
       {messages.length <= 1 && (
-        <div className="px-4 py-2 border-t border-gray-100 bg-white">
+        <div className="shrink-0 max-h-[30%] overflow-y-auto px-4 py-2 border-t border-gray-100 bg-white">
           <p className="text-xs text-gray-500 mb-2">
             Quick questions:
           </p>
@@ -165,7 +165,7 @@ const ChatWindow: React.FC = () => {
       {/* Input */}
       <form
         onSubmit={handleSubmit}
-        className="p-3 border-t border-gray-200 bg-white">
+        className="shrink-0 p-3 border-t border-gray-200 bg-white">
           <div className="flex items-center gap-2">
             <input
             ref={inputRef}
@@ -173,13 +173,13 @@ const ChatWindow: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask me anything..."
-            className="flex-1 px-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400"
+            className="min-w-0 flex-1 px-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400"
             disabled={isLoading}
             />
             <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="p-2 bg-slate-700 text-white rounded-full hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            className="shrink-0 p-2 bg-slate-700 text-white rounded-full hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
             <MdSend size={18} />
           </button>
           </div>

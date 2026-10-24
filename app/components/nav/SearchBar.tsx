@@ -195,15 +195,15 @@ const SearchBar = () => {
     if (!isMainPage) return null;
 
     return (
-        <div className="relative">
+        <div className="relative w-full min-w-0">
             <form
                 ref={formRef}
                 onSubmit={handleFormSubmit}
-                className="w-40 md:w-80 sm:w-40 mx-auto relative">
+                className="w-full md:w-80 max-w-full mx-auto relative">
                 <div
                 className="flex items-center gap-2 rounded-xl bg-white border-2
                 border-black/10 focus-within:border-blue-500/50 transition-all duration-300">
-                    <div className="flex items-center w-40 md:w-80 sm:w-40 pl-2">
+                    <div className="flex items-center w-full min-w-0 pl-2">
                         <input
                             type="text"
                             ref={searchInputRef}
@@ -213,13 +213,13 @@ const SearchBar = () => {
                             autoComplete="off"
                             placeholder="Try: blue dress under $50"
                             className="flex-1 px-3 py-2 border-none focus:outline-none
-                            focus:ring-0 placeholder:text-zinc:400 w-40 md:w-80 sm:w-40 text-sm"
+                            focus:ring-0 placeholder:text-zinc:400 w-full min-w-0 text-sm"
                             onKeyDown={handleKeyDown}
                         />
                         <button
                             type="submit"
                             disabled={aiProcessing}
-                            className="p-2 bg-slate-700 text-white rounded-r-md hover:opacity-80 disabled:opacity-50">
+                            className="shrink-0 p-2 bg-slate-700 text-white rounded-r-md hover:opacity-80 disabled:opacity-50">
                             {aiProcessing ? (
                                 <svg
                                 className="animate-spin h-5 w-5"
@@ -252,7 +252,7 @@ const SearchBar = () => {
                 />
             </form>
             {aiInterpretation && (
-                <div className="absolute top-full left-0 right-0 mt-1 mx-auto w-40 md:w-80 sm:w-40">
+                <div className="absolute top-full left-0 right-0 mt-1 mx-auto w-full md:w-80 max-w-full">
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-2 text-xs flex items-center gap-1">
                     <MdAutoAwesome className="text-purple-500 flex-shrink-0" size={14} />
                     <span className="text-purple-700 truncate">{aiInterpretation}</span>

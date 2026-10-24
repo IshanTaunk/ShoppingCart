@@ -29,7 +29,7 @@ export default function RootLayout({
       >
         <CartProvider>
           <ChatProvider>
-          <div className="flex flex-col min-h-screen min-w-[460px] md:min-w-[760px]">
+          <div className="flex flex-col min-h-screen w-full min-w-0">
             <NavBar></NavBar>
             <main>{children}</main>
             <Footer></Footer>
