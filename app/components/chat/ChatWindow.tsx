@@ -48,9 +48,8 @@ const ChatWindow: React.FC = () => {
         price: p.price,
         quantity: p.quantity,
       }));
-
-      await sendMessage(input.trim(), cartItems || []);
       setInput('');
+      await sendMessage(input.trim(), cartItems || []);
     };
 
     const handleQuickQuestion = (question: string) => {

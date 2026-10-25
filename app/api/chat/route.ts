@@ -25,13 +25,24 @@ async function executeToolCall(
   switch (toolName) {
     case 'searchProducts': {
       const { query, category, priceMax } = toolInput as {
-        query: string;
+        query?: string;
         category?: string;
         priceMax?: number;
       };
+      const normalizedQuery =
+        typeof query === 'string' ? query.trim() : '';
+      const normalizedCategory =
+        typeof category === 'string'
+          ? category.trim().toLowerCase()
+          : undefined;
+      const effectiveQuery =
+        normalizedQuery.toLowerCase() === normalizedCategory
+          ? ''
+          : normalizedQuery;
+
       const products = await getProducts({
-        query,
-        category,
+        query: effectiveQuery,
+        category: normalizedCategory,
         priceMax,
         limit: 5,
       });
@@ -126,25 +137,26 @@ const chatTools: ToolDefinition[] = [
   {
     name: 'searchProducts',
     description:
-      'Search for products by query and optional filters. Use this when the user asks to find products or wants recommendations.',
+      'Search for products by keywords and optional filters. Use this when the user asks to find products or wants recommendations.',
     input_schema: {
       type: 'object',
       properties: {
         query: {
           type: 'string',
-          description: 'Search keywords for products',
+          description:
+            'Search keywords for products. Omit or use an empty string when the user only specifies a category.',
         },
         category: {
           type: 'string',
           description:
-            'Product category (mens, womens, accessories, beauty)',
+            'Broad product category (mens, womens, accessories, beauty). Dresses belong to womens; perfume and fragrances belong to beauty.',
         },
         priceMax: {
           type: 'number',
           description: 'Maximum price filter',
         },
       },
-      required: ['query'],
+      required: [],
     },
   },
   {

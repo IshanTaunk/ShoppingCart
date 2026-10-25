@@ -19,18 +19,51 @@ export interface IProductsParams {
   aiCategory?: string;
 }
 
+const productTypeCategoryAliases: Record<string, string> = {
+  clothes: 'clothing',
+  clothing: 'clothing',
+  apparel: 'clothing',
+
+  men: 'mens',
+  mens: 'mens',
+  "men's clothes": 'mens',
+
+  beauty: 'beauty',
+
+  dress: 'womens-dresses',
+  dresses: 'womens-dresses',
+  women: 'womens',
+  womens: 'womens',
+  "women's clothes": 'womens',
+
+  fragrance: 'fragrances',
+  fragrances: 'fragrances',
+  perfume: 'fragrances',
+  perfumes: 'fragrances',
+};
+
 const categoryQuery = (
   category: string,
 ): string | string[] => {
   if (category) {
+    const normalizedCategory = category.trim().toLowerCase();
     const categoryArr: string[] = [];
-    switch (category) {
+    switch (normalizedCategory) {
       case 'accessories': {
         categoryArr.push(
           'accessories',
           'kitchen-accessories',
           'mobile-accessories',
           'sports-accessories',
+        );
+        break;
+      }
+      case 'apparel':
+      case 'clothes':
+      case 'clothing': {
+        categoryArr.push(
+          'mens-shirts',
+          'womens-dresses',
         );
         break;
       }
@@ -53,6 +86,19 @@ const categoryQuery = (
         );
         break;
       }
+      case 'dress':
+      case 'dresses':
+      case 'womens-dresses': {
+        categoryArr.push('womens-dresses');
+        break;
+      }
+      case 'fragrance':
+      case 'fragrances':
+      case 'perfume':
+      case 'perfumes': {
+        categoryArr.push('fragrances');
+        break;
+      }
       case 'beauty': {
         categoryArr.push(
           'fragrances',
@@ -63,7 +109,7 @@ const categoryQuery = (
       }
       default:
         // no predefined synonyms – fall through and return the original category
-        return category;
+        return normalizedCategory;
     }
 
     return categoryArr.length > 0 ? categoryArr : category;
@@ -83,18 +129,17 @@ export const getProducts = async (
     priceMax,
     aiCategory,
   } = params;
-    let searchString = query;
-    if (!query) {
-        searchString = '';
-    }
+    const normalizedQuery = query.trim().toLowerCase();
+    const inferredCategory =
+      productTypeCategoryAliases[normalizedQuery];
+    const searchString = inferredCategory ? '' : query;
 
       // Use aiCategory if provided (from AI search), otherwise use regular category
-    const effectiveCategory = aiCategory || category;
+    const effectiveCategory =
+      inferredCategory || aiCategory || category;
     const categoryStr = effectiveCategory && categoryQuery(effectiveCategory);
-    const limitVal = categoryStr === 'all' ? limit || 10 : undefined;
-    const skipVal = categoryStr === 'all' ? skip || 0 : undefined;
-
-    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const limitVal = limit ?? (categoryStr === 'all' ? 10 : 100);
+    const skipVal = skip ?? 0;
 
     try {
     const matchClauses = [];
@@ -174,7 +219,6 @@ export const getProducts = async (
             {
               $match: {
                 category: { $ne: 'groceries' },
-                title: { $regex: escaped, $options: 'i' },
               },
             },
             {
