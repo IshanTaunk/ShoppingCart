@@ -1,7 +1,7 @@
 import { useCart } from "@/hooks/useCart";
 import { Message, useChat } from "@/providers/ChatProvider";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdAutoAwesome, MdMinimize, MdRefresh, MdSend } from "react-icons/md";
 
 /** Renders message content with [ID: xxx] patterns as clickable product links */
@@ -36,6 +36,13 @@ const ChatWindow: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [input, setInput] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    }, [messages, isLoading]);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
